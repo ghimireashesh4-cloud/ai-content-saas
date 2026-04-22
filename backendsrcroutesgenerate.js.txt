@@ -1,0 +1,22 @@
+import express from "express";
+import { generateScript } from "../services/scriptService.js";
+import { generateVoice } from "../services/voiceService.js";
+import { createVideo } from "../services/videoService.js";
+
+const router = express.Router();
+
+router.post("/generate", async (req, res) => {
+  try {
+    const { topic } = req.body;
+
+    const script = await generateScript(topic);
+    await generateVoice(script);
+    const video = await createVideo();
+
+    res.json({ script, video });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+export default router;
